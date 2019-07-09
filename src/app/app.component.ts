@@ -29,7 +29,7 @@ export class AppComponent {
     private addNodes(root, levels) {
         if (levels.length > 0) {
             for (let i = 0; i < levels[0]; i++) {
-                const node = { name: 'node-' + i, items: [] };
+                const node = { name: 'node-' + i + levels[0], items: [] };
                 root.items.push(node);
 
                 this.addNodes(node, levels.slice(1));
