@@ -16,19 +16,13 @@ export class DiagramComponent implements AfterViewInit, OnDestroy {
     @Input('shape') customShape: Object;
     @Input('layout') customLayout: Object;
 
-    constructor(private hostEl: ElementRef) {
-        console.log(this.items);
-    }
+    constructor(private hostEl: ElementRef) { }
 
     ngAfterViewInit() {
         kendo.jQuery(this.diagramEl.nativeElement).kendoDiagram({
             dataSource: {
-                data: this.items,
-                schema: {
-                    model: {
-                        children: 'items'
-                    }
-                }
+                name: 'node',
+                data: this.items
             },
             layout: Object.assign({
                 type: 'tree',
@@ -39,7 +33,6 @@ export class DiagramComponent implements AfterViewInit, OnDestroy {
             shapeDefaults: Object.assign({
                 width: 40,
                 height: 40,
-                
             }, this.customShape)
         });
     }
