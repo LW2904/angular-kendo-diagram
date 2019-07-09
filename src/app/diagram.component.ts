@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, ElementRef, ViewChild, AfterViewInit, OnDestroy, Input } from '@angular/core';
 
 declare var kendo: any;
 
@@ -12,49 +12,39 @@ declare var kendo: any;
 export class DiagramComponent implements AfterViewInit, OnDestroy {
     @ViewChild('diagram', { static: true }) diagramEl: ElementRef;
 
-    constructor(private hostEl: ElementRef) {}
+    @Input() items: Object[];
+    @Input('shape') customShape: Object;
+    @Input('layout') customLayout: Object;
+
+    constructor(private hostEl: ElementRef) {
+        console.log(this.items);
+    }
 
     ngAfterViewInit() {
         kendo.jQuery(this.diagramEl.nativeElement).kendoDiagram({
-              dataSource: {
-                  data: this.diagramNodes(),
-                  schema: {
-                      model: {
-                          children: 'items'
-                      }
-                  }
-              },
-              layout: {
-                  type: 'tree',
-                  subtype: 'up',
-                  horizontalSeparation: 30,
-                  verticalSeparation: 20
-              },
-              shapeDefaults: {
-                  width: 40,
-                  height: 40
-              }
+            dataSource: {
+                data: this.items,
+                schema: {
+                    model: {
+                        children: 'items'
+                    }
+                }
+            },
+            layout: Object.assign({
+                type: 'tree',
+                subtype: 'down',
+                horizontalSeparation: 30,
+                verticalSeparation: 20
+            }, this.customLayout),
+            shapeDefaults: Object.assign({
+                width: 40,
+                height: 40,
+                
+            }, this.customShape)
         });
     }
 
     ngOnDestroy(): void {
         kendo.destroy(this.hostEl.nativeElement);
-    }
-
-    private diagramNodes() {
-        const root = { name: 'root', items: [] };
-        this.addNodes(root, [3, 2, 2]);
-        return [root];
-    }
-
-    private addNodes(root, levels) {
-        if (levels.length > 0) {
-            for (let i = 0; i < levels[0]; i++) {
-                const node = { name: 'node-' + i, items: [] };
-                root.items.push(node);
-
-                this.addNodes(node, levels.slice(1));
-            }
-        }
     }
 }
